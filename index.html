@@ -7,15 +7,18 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-base: #030712;
-      --panel-bg: rgba(10, 15, 30, 0.55);
+      --bg-base: #02040a;
+      --panel-bg: rgba(10, 14, 25, 0.65);
       --panel-border: rgba(255, 255, 255, 0.08);
       --panel-highlight: rgba(255, 255, 255, 0.15);
       --cyan: #00f0ff;
       --cyan-glow: rgba(0, 240, 255, 0.3);
       --emerald: #10b981;
+      --blue: #3b82f6;
       --purple: #a855f7;
       --amber: #f59e0b;
+      --rose: #f43f5e;
+      --slate: #64748b;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --font-mono: 'JetBrains Mono', monospace;
@@ -23,9 +26,9 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: var(--bg-base); }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
 
     body {
       background-color: var(--bg-base);
@@ -38,187 +41,130 @@
     }
 
     /* Fixed Background & Canvas */
-    #bg-canvas {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      z-index: 0;
-      opacity: 0.5;
-      pointer-events: none;
-    }
-    .vignette-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      z-index: 1;
-      pointer-events: none;
-      background: radial-gradient(circle at center, transparent 40%, var(--bg-base) 100%),
-                  linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
-      background-size: 100% 100%, 100% 4px;
-    }
+    #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; opacity: 0.4; pointer-events: none; }
+    .vignette-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; background: radial-gradient(circle at center, transparent 35%, var(--bg-base) 100%); }
 
     /* HUD Layout */
     .hud-wrapper {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      max-width: 1800px;
-      margin: 0 auto;
-      padding: 24px;
-      display: grid;
-      grid-template-columns: 340px 1fr 400px;
-      grid-template-rows: auto 1fr;
-      gap: 24px;
-      min-height: 100vh;
+      position: relative; z-index: 10; width: 100%; max-width: 1850px; margin: 0 auto; padding: 24px;
+      display: grid; grid-template-columns: 360px 1fr 420px; grid-template-rows: auto 1fr; gap: 24px; min-height: 100vh;
     }
 
     /* Premium Glass Panels */
     .glass-panel {
-      background: var(--panel-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--panel-border);
-      border-top: 1px solid var(--panel-highlight);
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
+      background: var(--panel-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--panel-border); border-top: 1px solid var(--panel-highlight); border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05); padding: 28px; display: flex; flex-direction: column;
     }
 
     /* Header Identity */
-    .header {
-      grid-column: 1 / -1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 28px;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
+    .header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; padding: 16px 28px; flex-wrap: wrap; gap: 16px; }
     .identity { display: flex; align-items: center; gap: 18px; }
-    .status-ring {
-      width: 14px; height: 14px; border-radius: 50%;
-      background: var(--cyan);
-      box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.4);
-      animation: pulse-ring 2.5s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-    }
-    @keyframes pulse-ring {
-      0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.4); }
-      70% { box-shadow: 0 0 0 12px rgba(0, 240, 255, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
-    }
-    .name-title { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
-    .name-sub { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); letter-spacing: 1px; margin-top: 2px; }
+    .status-ring { width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.5); animation: pulse-ring 2.5s infinite cubic-bezier(0.215, 0.61, 0.355, 1); }
+    @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.5); } 70% { box-shadow: 0 0 0 12px rgba(0, 240, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); } }
+    .name-title { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.5px; }
+    .name-sub { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1.5px; margin-top: 4px; text-transform: uppercase; }
 
     /* Action Buttons */
     .actions { display: flex; gap: 12px; align-items: center; }
-    .btn-link {
-      color: var(--text-muted); text-decoration: none; font-family: var(--font-mono); font-size: 0.8rem;
-      padding: 8px 14px; border: 1px solid var(--panel-border); border-radius: 8px;
-      transition: all 0.2s ease; background: rgba(0,0,0,0.2);
-    }
-    .btn-link:hover { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 240, 255, 0.05); }
-    
-    .btn-resume {
-      background: linear-gradient(135deg, var(--cyan), #0284c7);
-      color: #030712; text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700;
-      padding: 8px 18px; border-radius: 8px; transition: all 0.25s ease;
-      box-shadow: 0 4px 15px var(--cyan-glow); border: 1px solid transparent;
-      display: inline-flex; align-items: center; gap: 6px;
-    }
-    .btn-resume:hover {
-      transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 240, 255, 0.5);
-      background: linear-gradient(135deg, #fff, var(--cyan));
-    }
+    .btn-link { color: var(--text-muted); text-decoration: none; font-family: var(--font-mono); font-size: 0.75rem; padding: 8px 16px; border: 1px solid var(--panel-border); border-radius: 8px; transition: all 0.2s ease; background: rgba(0,0,0,0.3); text-transform: uppercase; letter-spacing: 1px; }
+    .btn-link:hover { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 240, 255, 0.08); }
+    .btn-resume { background: linear-gradient(135deg, var(--cyan), #0284c7); color: #02040a; text-decoration: none; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 800; padding: 8px 20px; border-radius: 8px; transition: all 0.25s ease; box-shadow: 0 4px 15px var(--cyan-glow); border: 1px solid transparent; display: inline-flex; align-items: center; gap: 8px; letter-spacing: 1px; }
+    .btn-resume:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 240, 255, 0.6); background: linear-gradient(135deg, #fff, var(--cyan)); }
 
-    /* Typography & Layout Elements */
-    .sect-tag { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; }
-    .body-text { font-size: 0.95rem; line-height: 1.7; color: #cbd5e1; margin-bottom: 24px; font-weight: 300; }
-    .highlight { color: #fff; font-weight: 500; }
-    .highlight-cyan { color: var(--cyan); font-weight: 600; }
+    /* Section Typography */
+    .sect-tag { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px; }
+
+    /* Bio & Academics Card */
+    .bio-card { background: rgba(0,0,0,0.3); border: 1px solid var(--panel-border); border-left: 3px solid var(--cyan); border-radius: 8px; padding: 18px; margin-bottom: 32px; }
+    .bio-row { margin-bottom: 8px; font-size: 0.85rem; display: flex; gap: 8px; }
+    .bio-lbl { font-family: var(--font-mono); color: var(--text-muted); font-weight: 700; width: 45px; }
+    .bio-val { color: var(--text-main); font-weight: 500; flex: 1; }
+    .bio-desc { font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; margin-top: 12px; font-weight: 300; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); }
 
     /* Bento Box Metrics */
-    .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: auto; }
-    .bento-card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.2) 100%);
-      border: 1px solid var(--panel-border); border-top: 1px solid rgba(255,255,255,0.08);
-      border-radius: 12px; padding: 16px 12px; text-align: center;
-    }
-    .bento-val { font-family: var(--font-mono); font-size: 1.35rem; font-weight: 700; color: var(--cyan); margin-bottom: 4px; text-shadow: 0 0 12px var(--cyan-glow); }
-    .bento-lbl { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 36px; }
+    .bento-card { background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.3) 100%); border: 1px solid var(--panel-border); border-top: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px 10px; text-align: center; }
+    .bento-val { font-family: var(--font-mono); font-size: 1.3rem; font-weight: 800; color: var(--cyan); margin-bottom: 4px; text-shadow: 0 0 15px var(--cyan-glow); }
+    .bento-lbl { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
-    /* Center Node Map */
-    .center-console { display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 40px; padding: 20px 0; }
-    .node-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; width: 100%; max-width: 700px; }
+    /* Center Console */
+    .center-console { display: flex; flex-direction: column; gap: 24px; height: 100%; }
     
-    .node-btn {
-      background: rgba(10, 15, 30, 0.6); border: 1px solid var(--panel-border);
-      padding: 20px 24px; border-radius: 14px; cursor: pointer; text-align: center;
-      min-width: 170px; flex: 1; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      backdrop-filter: blur(10px); position: relative; overflow: hidden;
-    }
-    .node-btn:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-4px); background: rgba(255,255,255,0.03); }
-    
-    /* Node Active States */
-    .node-btn.active.hw { border-color: var(--cyan); background: rgba(0, 240, 255, 0.05); box-shadow: inset 0 1px 0 rgba(0, 240, 255, 0.4), 0 10px 20px var(--cyan-glow); }
-    .node-btn.active.sw { border-color: var(--purple); background: rgba(168, 85, 247, 0.05); box-shadow: inset 0 1px 0 rgba(168, 85, 247, 0.4), 0 10px 20px rgba(168, 85, 247, 0.2); }
-    .node-btn.active.mix { border-color: var(--amber); background: rgba(245, 158, 11, 0.05); box-shadow: inset 0 1px 0 rgba(245, 158, 11, 0.4), 0 10px 20px rgba(245, 158, 11, 0.2); }
+    /* Company Groupings */
+    .company-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; flex: none; }
+    .cg-title { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+    .cg-title::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
+    .cg-title.open-source { color: var(--rose); font-weight: 700; text-shadow: 0 0 10px rgba(244, 63, 94, 0.4); }
 
-    .n-tech { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; letter-spacing: 1px; }
-    .node-btn.active.hw .n-tech { color: var(--cyan); }
-    .node-btn.active.sw .n-tech { color: var(--purple); }
-    .node-btn.active.mix .n-tech { color: var(--amber); }
-    .n-name { font-size: 1.05rem; font-weight: 600; color: var(--text-main); }
+    .node-grid { display: flex; flex-wrap: wrap; gap: 12px; width: 100%; }
+    .node-btn { background: rgba(10, 14, 25, 0.7); border: 1px solid var(--panel-border); padding: 16px 14px; border-radius: 12px; cursor: pointer; text-align: center; flex: 1 1 calc(25% - 12px); min-width: 140px; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(12px); position: relative; overflow: hidden; }
+    .node-btn:hover { border-color: rgba(255,255,255,0.25); transform: translateY(-3px); background: rgba(255,255,255,0.04); }
+    .n-tech { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
+    .n-name { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
+    .node-btn.active { background: rgba(255,255,255,0.05); border-color: var(--node-color); box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 8px 20px rgba(0,0,0,0.5); }
+    .node-btn.active .n-tech { color: var(--node-color); text-shadow: 0 0 10px var(--node-color); }
 
-    /* Oscilloscope Engine */
-    .osc-container {
-      width: 100%; max-width: 700px; height: 140px;
-      background: #02040a; border: 1px solid var(--panel-border); border-radius: 12px;
-      position: relative; overflow: hidden;
-      box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
-    }
-    .osc-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; z-index: 1; }
-    #wave-canvas { width: 100%; height: 100%; position: relative; z-index: 2; }
-    .osc-data { position: absolute; z-index: 3; font-family: var(--font-mono); padding: 12px 16px; display: flex; justify-content: space-between; width: 100%; pointer-events: none; }
-    .osc-lbl { font-size: 0.7rem; color: var(--text-muted); }
-    .osc-val { font-size: 0.9rem; font-weight: 700; text-shadow: 0 0 10px currentColor; }
+    /* Special Open Source Button Styling */
+    .node-btn.open-btn { border: 1px solid rgba(244, 63, 94, 0.4); background: rgba(244, 63, 94, 0.05); }
+    .node-btn.open-btn:hover { border-color: var(--rose); background: rgba(244, 63, 94, 0.1); }
+    .node-btn.open-btn.active { box-shadow: inset 0 1px 0 rgba(244, 63, 94, 0.4), 0 10px 25px rgba(244, 63, 94, 0.3); }
+
+    /* Topology Visualizer */
+    .topology-container { flex: 1; width: 100%; background: #010206; border: 1px solid var(--panel-border); border-radius: 12px; position: relative; overflow: hidden; box-shadow: inset 0 0 40px rgba(0,0,0,0.9); display: flex; flex-direction: column; min-height: 350px; }
+    .topology-header { position: absolute; top: 0; left: 0; width: 100%; padding: 12px 18px; display: flex; justify-content: space-between; background: linear-gradient(180deg, rgba(1,2,6,0.9) 0%, transparent 100%); z-index: 5; pointer-events: none; }
+    .top-lbl { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); letter-spacing: 1px; }
+    .top-val { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; text-shadow: 0 0 10px currentColor; transition: color 0.3s; }
+    #topology-canvas { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 2; }
 
     /* Right Inspector Panel */
-    .insp-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; gap: 12px; }
-    .i-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; line-height: 1.1; transition: color 0.3s; }
+    .insp-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; gap: 12px; }
+    .i-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; line-height: 1.1; transition: color 0.3s; letter-spacing: -0.5px; }
     .i-org { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
-    .i-time { font-family: var(--font-mono); font-size: 0.7rem; background: rgba(255,255,255,0.05); padding: 6px 10px; border-radius: 6px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); white-space: nowrap; }
+    .i-time { font-family: var(--font-mono); font-size: 0.65rem; background: rgba(255,255,255,0.05); padding: 6px 10px; border-radius: 6px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.08); white-space: nowrap; letter-spacing: 0.5px; }
 
-    .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
-    .s-row { background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 8px; border-left: 3px solid var(--cyan); transition: border-color 0.3s; }
-    .s-lbl { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); margin-bottom: 4px; }
-    .s-val { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-main); font-weight: 600; }
+    .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    .s-row { background: rgba(0,0,0,0.3); padding: 12px 14px; border-radius: 8px; border-left: 3px solid; transition: border-color 0.3s; }
+    .s-lbl { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-muted); margin-bottom: 4px; letter-spacing: 1px; }
+    .s-val { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-main); font-weight: 700; }
 
-    .bullet-list { list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 14px; }
-    .bullet-list li { position: relative; padding-left: 20px; font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; }
-    .bullet-list li::before { content: '▹'; position: absolute; left: 0; top: 0; font-size: 1.1rem; transition: color 0.3s; }
+    .bullet-list { list-style: none; margin-bottom: 24px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+    .bullet-list li { position: relative; padding-left: 22px; font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; font-weight: 300; }
+    .bullet-list li::before { content: '▹'; position: absolute; left: 0; top: 0; font-size: 1.2rem; transition: color 0.3s; line-height: 1.4; }
+
+    /* Graphical Open Source Flow Component */
+    .os-graphic { display: none; background: rgba(0,0,0,0.4); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 8px; padding: 16px; margin-bottom: 24px; }
+    .os-graphic.active { display: block; animation: fade-in 0.5s ease; }
+    @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .os-g-header { font-family: var(--font-mono); font-size: 0.7rem; color: var(--rose); margin-bottom: 12px; letter-spacing: 1px; text-align: center; }
+    .os-flow { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .g-box { flex: 1; padding: 10px 0; text-align: center; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); }
+    .g-arrow { color: var(--text-muted); font-size: 1rem; }
 
     .tool-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-    .tag { font-family: var(--font-mono); font-size: 0.7rem; padding: 6px 12px; border-radius: 6px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); transition: all 0.3s; }
+    .tag { font-family: var(--font-mono); font-size: 0.7rem; padding: 6px 14px; border-radius: 6px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); transition: all 0.3s; letter-spacing: 0.5px; }
 
-    /* Responsive Logic */
-    @media (max-width: 1200px) {
+    /* Responsive */
+    @media (max-width: 1300px) {
       .hud-wrapper { grid-template-columns: 1fr; grid-template-rows: auto; }
       .left-sidebar, .right-sidebar { height: auto; }
-      .bento-grid { margin-top: 24px; }
+      .topology-container { min-height: 400px; } 
+      #bg-canvas { position: fixed; }
     }
     @media (max-width: 600px) {
       .bento-grid, .specs-grid { grid-template-columns: 1fr; }
       .actions { width: 100%; justify-content: space-between; }
+      .node-btn { flex: 1 1 100%; }
+      .os-flow { flex-direction: column; }
+      .g-arrow { transform: rotate(90deg); }
     }
   </style>
 </head>
 <body>
 
-  <!-- Deep Architecture Canvas Background -->
   <canvas id="bg-canvas"></canvas>
   <div class="vignette-overlay"></div>
 
-  <!-- Main Layout -->
   <div class="hud-wrapper">
     
     <!-- Header -->
@@ -227,27 +173,34 @@
         <div class="status-ring"></div>
         <div>
           <div class="name-title">Prachurjya Sharma</div>
-          <div class="name-sub">Physical Design Engineer (6nm–22nm)</div>
+          <div class="name-sub">Physical Design Engineer • RTL to GDSII</div>
         </div>
       </div>
       <div class="actions">
-        <a href="https://github.com/prachurjyaghy" target="_blank" class="btn-link">GitHub</a>
-        <a href="https://linkedin.com/in/prachurjya-sharma-04" target="_blank" class="btn-link">LinkedIn</a>
-        <a href="Prachurjya_Sharma_Physical_Design.pdf" target="_blank" class="btn-resume">
+        <a href="https://github.com/prachurjyaghy" target="_blank" class="btn-link">GITHUB</a>
+        <a href="https://linkedin.com/in/prachurjya-sharma-04" target="_blank" class="btn-link">LINKEDIN</a>
+        <a href="https://prachurjyaghy.github.io/Prachurjya_Sharma_Physical_Design.pdf" target="_blank" class="btn-resume">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
           RESUME.PDF
         </a>
       </div>
     </header>
 
-    <!-- Left Sidebar: Profile Summary -->
+    <!-- Left Sidebar -->
     <aside class="glass-panel left-sidebar">
-      <div class="sect-tag">/// Engineering Profile</div>
-      <p class="body-text">
-        Bridging the gap between <span class="highlight">advanced node silicon architecture</span> and <span class="highlight">scalable software automation</span>. Specializing in complete RTL-to-GDSII execution on ultra-dense, multi-million instance blocks, resolving critical EM/IR, STA, and DRC bottlenecks using custom <span class="highlight-cyan">TCL/Perl workflows</span> and Cloud technologies.
-      </p>
       
-      <div class="sect-tag" style="margin-top:auto;">/// Tapeout Telemetry</div>
+      <!-- BIODATA & ACADEMICS -->
+      <div class="sect-tag">/// Operative Bio-Data</div>
+      <div class="bio-card">
+        <div class="bio-row"><div class="bio-lbl">ID:</div><div class="bio-val" style="color: var(--cyan); font-weight: 700;">PRACHURJYA SHARMA</div></div>
+        <div class="bio-row"><div class="bio-lbl">ROLE:</div><div class="bio-val">Physical Design Engineer</div></div>
+        <div class="bio-row"><div class="bio-lbl">EDU:</div><div class="bio-val">B.Tech ECE @ SRM Institute (GPA: 81.46%)</div></div>
+        <div class="bio-desc">
+          Architecting advanced node silicon while pioneering "Shift-Left" EDA automation. Specializing in high-frequency Mesh CTS, complex power domain floorplanning, and building custom TCL/Perl infrastructure to aggressively optimize RTL-to-GDSII tapeout cycles.
+        </div>
+      </div>
+
+      <div class="sect-tag">/// Global Tapeout Telemetry</div>
       <div class="bento-grid">
         <div class="bento-card">
           <div class="bento-val">4.0M+</div>
@@ -268,224 +221,433 @@
       </div>
     </aside>
 
-    <!-- Center Console: Nodes & Oscilloscope -->
+    <!-- Center Console: Company-Separated Nodes & Visualizer -->
     <main class="center-console">
-      <div class="node-grid">
-        <div class="node-btn hw active" onclick="loadNode('6nm', this)">
-          <div class="n-tech">6nm FINFET</div>
-          <div class="n-name">MediaTek Network</div>
-        </div>
-        <div class="node-btn hw" onclick="loadNode('7nm', this)">
-          <div class="n-tech">7nm FINFET</div>
-          <div class="n-name">MediaTek Wi-Fi</div>
-        </div>
-        <div class="node-btn hw" onclick="loadNode('12nm', this)">
-          <div class="n-tech">12nm & 22nm</div>
-          <div class="n-name">TV & Satellite SoC</div>
-        </div>
-        <div class="node-btn sw" onclick="loadNode('code', this)">
-          <div class="n-tech">TCL / C# / AZURE</div>
-          <div class="n-name">Automation Engine</div>
-        </div>
-        <div class="node-btn mix" onclick="loadNode('open', this)">
-          <div class="n-tech">SKY130 / OPENLANE</div>
-          <div class="n-name">Open-Source VLSI</div>
+      
+      <!-- SECTOR 1: QUEST GLOBAL -->
+      <div class="company-group">
+        <div class="cg-title">Sector 01 // Quest Global (Physical Design)</div>
+        <div class="node-grid">
+          <div class="node-btn" style="--node-color: var(--cyan);" onclick="loadNode('6nm', this)">
+            <div class="n-tech">6nm FINFET</div>
+            <div class="n-name">MediaTek Network</div>
+          </div>
+          <div class="node-btn" style="--node-color: var(--emerald);" onclick="loadNode('7nm', this)">
+            <div class="n-tech">7nm FINFET</div>
+            <div class="n-name">MediaTek Wi-Fi</div>
+          </div>
+          <div class="node-btn" style="--node-color: var(--blue);" onclick="loadNode('12nm', this)">
+            <div class="n-tech">12nm NODE</div>
+            <div class="n-name">Television SoC</div>
+          </div>
+          <div class="node-btn" style="--node-color: var(--amber);" onclick="loadNode('22nm', this)">
+            <div class="n-tech">22nm FULL-CHIP</div>
+            <div class="n-name">Satellite ASIC</div>
+          </div>
         </div>
       </div>
 
-      <div class="osc-container">
-        <div class="osc-grid"></div>
-        <div class="osc-data">
-          <div class="osc-lbl">SYS_CLOCK_MESH</div>
-          <div class="osc-val" id="osc-freq">500 MHz</div>
+      <!-- SECTOR 2: KPIT TECH -->
+      <div class="company-group">
+        <div class="cg-title">Sector 02 // KPIT Technologies (Software & Cloud)</div>
+        <div class="node-grid">
+          <div class="node-btn" style="--node-color: var(--purple);" onclick="loadNode('kpit', this)">
+            <div class="n-tech">C# / AZURE / SQL</div>
+            <div class="n-name">Automotive CyberSec</div>
+          </div>
         </div>
-        <canvas id="wave-canvas"></canvas>
+      </div>
+
+      <!-- SECTOR 3: PARALLEL R&D -->
+      <div class="company-group">
+        <div class="cg-title open-source">Sector 03 // Parallel Independent R&D</div>
+        <div class="node-grid">
+          <div class="node-btn open-btn" style="--node-color: var(--rose);" onclick="loadNode('open', this)">
+            <div class="n-tech" style="color: var(--rose);">SKY130 / OPENLANE</div>
+            <div class="n-name">Open-Source VLSI</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Interactive Layout Topology -->
+      <div class="topology-container">
+        <div class="topology-header">
+          <div class="top-lbl">ACTIVE_RENDER: <span class="top-val" id="top-label"></span></div>
+          <div class="top-lbl" id="top-status"></div>
+        </div>
+        <canvas id="topology-canvas"></canvas>
       </div>
     </main>
 
-    <!-- Right Sidebar: Data Inspector -->
+    <!-- Right Sidebar -->
     <aside class="glass-panel right-sidebar">
       <div class="sect-tag">/// Inspector Panel</div>
       
       <div class="insp-header">
         <div>
-          <div class="i-title" id="i-title">6nm Network Chip</div>
-          <div class="i-org" id="i-org">MediaTek @ Quest Global</div>
+          <div class="i-title" id="i-title">--</div>
+          <div class="i-org" id="i-org">--</div>
         </div>
-        <div class="i-time" id="i-time">Jan 2025 - Present</div>
+        <div class="i-time" id="i-time">--</div>
       </div>
 
-      <div class="specs-grid" id="i-specs">
-        <!-- JS Injected -->
+      <div class="specs-grid" id="i-specs"></div>
+
+      <!-- EXTRA GRAPHICS FOR OPEN SOURCE (Hidden by default) -->
+      <div class="os-graphic" id="os-visual">
+        <div class="os-g-header">/// OPENLANE RTL-TO-GDSII AUTOMATED FLOW ///</div>
+        <div class="os-flow">
+          <div class="g-box" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">Yosys<br>Synthesis</div>
+          <div class="g-arrow">➔</div>
+          <div class="g-box" style="background: rgba(168, 85, 247, 0.2); color: #c084fc;">OpenROAD<br>PnR</div>
+          <div class="g-arrow">➔</div>
+          <div class="g-box" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">Magic<br>DRC/LVS</div>
+        </div>
       </div>
 
-      <div class="sect-tag">/// Impact & Architecture</div>
-      <ul class="bullet-list" id="i-bullets">
-        <!-- JS Injected -->
-      </ul>
+      <div class="sect-tag">/// Execution & Architectural Impact</div>
+      <ul class="bullet-list" id="i-bullets"></ul>
 
       <div class="sect-tag" style="margin-top:auto;">/// Methodology Stack</div>
-      <div class="tool-tags" id="i-tools">
-        <!-- JS Injected -->
-      </div>
+      <div class="tool-tags" id="i-tools"></div>
     </aside>
 
   </div>
 
   <script>
     /* =========================================
-       1. DATABASE MODEL
+       1. DATABASE MODEL (Product-Company Focused)
        ========================================= */
     const db = {
       "6nm": {
-        title: "6nm Network Chip", org: "MediaTek @ Quest Global", time: "Jan 2025 - Present", freq: "500 MHz", waveSpeed: 0.04, color: "#00f0ff", type: "hw",
-        specs: [ { l: "INSTANCES", v: "3.4 Million" }, { l: "MACROS", v: "77" }, { l: "FREQUENCY", v: "500 MHz" }, { l: "SCOPE", v: "Full PnR Flow" } ],
+        title: "6nm Network Chip", org: "MediaTek @ Quest Global", time: "Jan 2025 - Present", 
+        topLabel: "6NM CENTRAL SWITCH TOPOLOGY", topStatus: "UTIL: 84% | ROUTING: CONGESTION OPTIMIZED",
+        layoutMode: "network", color: "var(--cyan)", 
+        specs: [ { l: "COMPLEXITY", v: "3.4M Inst / 77 Macros" }, { l: "ROLE", v: "Block Lead" }, { l: "NODE", v: "6nm FinFET" }, { l: "IMPACT", v: "-25% DRCs, -40% IR" } ],
         bullets: [
-          "Overcame severe placement congestion across multi-power domains using optimal cell density techniques.",
-          "Reduced metal DRCs by 25% by engineering custom routing constraints and strategic metal layer usage.",
-          "Cut dynamic and PSH IR drop resistance by ~40% and closed cross-domain Conformal Low Power (CLP) checks."
+          "Owned end-to-end physical implementation of a 3.4M instance subsystem, driving multi-power domain floorplanning and congestion-aware placement.",
+          "Engineered custom routing constraints that bypassed tool limitations, successfully reducing metal DRCs by 25%.",
+          "Architected dynamic and PSH IR drop solutions, slashing grid resistance by ~40% to meet strict Conformal Low Power (CLP) criteria."
         ],
         tools: ["Innovus", "Tweaker", "Calibre", "Multi-Power", "EM/IR Signoff"]
       },
       "7nm": {
-        title: "7nm Wi-Fi Subsystem", org: "MediaTek @ Quest Global", time: "Aug 2024 - Jan 2025", freq: "1.25 GHz", waveSpeed: 0.12, color: "#00f0ff", type: "hw",
-        specs: [ { l: "INSTANCES", v: "3.0 Million" }, { l: "MACROS", v: "87" }, { l: "FREQUENCY", v: "1.25 GHz" }, { l: "CLOCKING", v: "Mesh CTS" } ],
+        title: "7nm Wi-Fi Chip", org: "MediaTek @ Quest Global", time: "Aug 2024 - Jan 2025", 
+        topLabel: "7NM RF & MESH CTS ARCHITECTURE", topStatus: "CLOCK MESH: ACTIVE | SKEW: MINIMIZED",
+        layoutMode: "wifi", color: "var(--emerald)", 
+        specs: [ { l: "COMPLEXITY", v: "3.0M Inst / 87 Macros" }, { l: "ROLE", v: "Timing & CTS Lead" }, { l: "FREQUENCY", v: "1.25 GHz Mesh" }, { l: "AUTOMATION", v: "TCL Flow Hooks" } ],
         bullets: [
-          "Delivered full Floorplan-to-Signoff flow targeting ultra-high-speed 1.25 GHz frequencies.",
-          "Implemented complex Mesh Clock Tree Synthesis (CTS) and fine-tuned clock latency for strict hold timing closure.",
-          "Engineered custom TCL automation scripts to rapidly resolve high-density metal DRC and LVS violations."
+          "Drove physical implementation for a high-frequency 1.25 GHz Wi-Fi core, optimizing setup/hold convergence under aggressive latency targets.",
+          "Designed and implemented a low-skew Mesh Clock Tree Synthesis (CTS) architecture to guarantee robust clock distribution.",
+          "Programmed custom TCL automation scripts to accelerate high-density LVS and metal DRC sign-off, drastically cutting iteration TAT."
         ],
-        tools: ["Innovus", "Calibre", "Mesh CTS", "TCL Scripts", "Setup/Hold"]
+        tools: ["Innovus", "Tweaker", "Calibre", "Mesh CTS", "TCL Scripts"]
       },
       "12nm": {
-        title: "12nm TV & 22nm Sat", org: "MediaTek & ORCA Systems", time: "Sep 2022 - Jul 2024", freq: "206 - 520 MHz", waveSpeed: 0.03, color: "#00f0ff", type: "hw",
-        specs: [ { l: "MAX INSTANCES", v: "4.0 Million" }, { l: "MAX MACROS", v: "287" }, { l: "12NM ROLE", v: "Television SoC" }, { l: "22NM ROLE", v: "Full-Chip Sat" } ],
+        title: "12nm Television Chip", org: "MediaTek @ Quest Global", time: "Nov 2023 - Jul 2024", 
+        topLabel: "12NM ALWAYS-ON (AON) PARTITION", topStatus: "AON VDD DOMAIN: ISOLATED",
+        layoutMode: "tv", color: "var(--blue)", 
+        specs: [ { l: "PARTITION", v: "Always-On (AON)" }, { l: "COMPLEXITY", v: "1.68M Inst" }, { l: "TAPE-OUT", v: "Time-Critical ECOs" }, { l: "VERIFICATION", v: "LEC & CLP" } ],
         bullets: [
-          "12nm TV: Implemented the Always-On (AON) partition, executing Functional & Metal ECOs under extreme tapeout deadlines.",
-          "22nm Sat: Owned Full-Chip Floorplanning including Die, IO Pad rings, DCAPs, and Level-Shifter placement.",
-          "Architected multi-voltage power rings and stripes, resolving multi-corner STA and IR drop violations."
+          "Spearheaded the physical design of the isolated Always-On (AON) voltage domain, ensuring stringent power-gating compliance.",
+          "Executed high-complexity Functional and Metal ECOs to rescue critical hold paths during the final tapeout phase.",
+          "Resolved severe late-stage cell density and timing bottlenecks while maintaining 100% LEC and CLP sign-off metrics."
         ],
-        tools: ["Aprisa", "PrimeTime", "Full-Chip Pads", "AON Domains", "Functional ECOs"]
+        tools: ["Innovus", "Tweaker", "Calibre", "Functional ECO", "LEC & CLP"]
       },
-      "code": {
-        title: "Automation Engine", org: "KPIT Technologies & Quest", time: "Feb 2020 - Present", freq: "AZURE_SYNC", waveSpeed: 0.07, color: "#a855f7", type: "sw",
-        specs: [ { l: "AUTOMATION", v: "TCL / Perl" }, { l: "SOFTWARE DEV", v: "C# / .NET" }, { l: "CLOUD", v: "Microsoft Azure" }, { l: "DATABASES", v: "SQL" } ],
+      "22nm": {
+        title: "22nm Satellite ASIC", org: "ORCA Systems @ Quest Global", time: "Sep 2022 - Aug 2023", 
+        topLabel: "22NM FULL-CHIP TOPOLOGY", topStatus: "IO PAD RING: SECURED | POWER GRID: ACTIVE",
+        layoutMode: "sat", color: "var(--amber)", 
+        specs: [ { l: "ARCHITECTURE", v: "Full-Chip Die" }, { l: "COMPLEXITY", v: "4.0M Inst / 287 Macros" }, { l: "POWER", v: "Multi-Voltage" }, { l: "SIGN-OFF", v: "Multi-Corner STA" } ],
         bullets: [
-          "Developed custom TCL procedures to automate repetitive Calibre DRC, LVS, and Antenna layout fixes, cutting TAT.",
-          "Built custom C#/.NET, SQL processes, and Azure integrations for cross-functional Automotive ECU Cybersecurity software.",
-          "Bridged global, multi-lingual client requirements into stable production software prior to transitioning into VLSI."
+          "Architected the top-level Full-Chip floorplan, driving the strategic placement of IO Pad rings, level-shifters, and 287 hard macros.",
+          "Designed a robust, multi-voltage power grid topology (rings and stripes) to support diverse active/sleep domains.",
+          "Achieved comprehensive multi-corner STA sign-off by resolving complex cross-domain timing and IR drop violations."
         ],
-        tools: ["TCL / Perl", "Bash", "C# / .NET", "Azure", "SQL", "Cybersecurity"]
+        tools: ["Aprisa", "PrimeTime", "Calibre", "Full-Chip Pads", "Multi-Voltage STA"]
+      },
+      "kpit": {
+        title: "EDA Infra & Cloud Engineering", org: "KPIT Technologies", time: "Feb 2020 - May 2022", 
+        topLabel: "AZURE CLOUD DEPLOYMENT TOPOLOGY", topStatus: "SERVER NODES: SECURE | DB: SYNCING",
+        layoutMode: "auto", color: "var(--purple)", 
+        specs: [ { l: "EDA SCRIPTING", v: "TCL / Perl / Bash" }, { l: "PREV SDE", v: "C# / .NET" }, { l: "INFRA", v: "Azure Cloud" }, { l: "FOCUS", v: "Shift-Left TAT" } ],
+        bullets: [
+          "Current Impact: Pioneering 'Shift-Left' EDA automation by writing advanced TCL procedures that auto-fix Calibre DRC/LVS/Antenna violations, reducing manual iteration times.",
+          "Past Foundation: Developed scalable C#/.NET backend services and Microsoft Azure cloud integrations for Automotive ECU Cybersecurity at KPIT Technologies.",
+          "Advantage: Leveraging production-grade software engineering principles (clean code, version control, SQL) to build superior VLSI CAD infrastructure."
+        ],
+        tools: ["TCL / Perl", "Bash", "C# / .NET", "Azure Cloud", "SQL"]
       },
       "open": {
-        title: "Open-Source VLSI", org: "SRM Institute (B.Tech) & GitHub", time: "Academic & Ongoing", freq: "OPENLANE_CLK", waveSpeed: 0.05, color: "#f59e0b", type: "mix",
-        specs: [ { l: "DEGREE", v: "B.Tech ECE" }, { l: "PDK", v: "SKY130" }, { l: "TOOLCHAIN", v: "OpenLane Flow" }, { l: "RTL SIM", v: "GTKWave" } ],
+        title: "Open-Source VLSI & AI", org: "Parallel Independent R&D", time: "Academic & Ongoing", 
+        topLabel: "SKY130 MULTI-PROJECT WAFER (MPW)", topStatus: "IP BLOCKS: PLACED | LVS: MATCH",
+        layoutMode: "open", color: "var(--rose)", 
+        specs: [ { l: "FOUNDRY PDK", v: "SkyWater SKY130" }, { l: "TOOLCHAIN", v: "OpenLane Flow" }, { l: "SYNTHESIS", v: "Yosys" }, { l: "RESEARCH", v: "AI/ML + Quantum" } ],
         bullets: [
-          "Executed complete Open-Source RTL-to-GDSII tapeout flows using OpenLane and the SkyWater SKY130 PDK.",
-          "Performed layout viewing and DRC checks natively in Magic VLSI.",
-          "Wrote and synthesized custom Verilog RTL designs, verifying timing with OpenTimer, Yosys, and Icarus Verilog."
+          "Independently executing full RTL-to-GDSII tapeout flows using the OpenLane toolchain and SKY130 open-source PDK.",
+          "Prototyping custom TCL flow hooks for VLSI synthesis and physical verification using Magic, Yosys, and OpenTimer.",
+          "Actively researching the integration of Machine Learning models for predictive QoR and Quantum Computing algorithms for combinatorial routing optimization."
         ],
-        tools: ["OpenLane", "SKY130", "Magic VLSI", "Yosys", "Icarus Verilog", "OpenTimer"]
+        tools: ["OpenLane", "SKY130", "Magic VLSI", "Yosys", "AI/ML", "Quantum Computing"]
       }
     };
 
-    let tFreq = 0.04, cFreq = 0.04, wCol = "#00f0ff";
+    let tColor = "var(--cyan)";
+    let currentLayoutMode = "network";
 
     function loadNode(id, el) {
       document.querySelectorAll('.node-btn').forEach(n => n.classList.remove('active'));
       el.classList.add('active');
 
       const d = db[id];
-      const root = document.documentElement;
 
-      // Update Header
+      // Update UI Panel
       document.getElementById('i-title').innerText = d.title;
       document.getElementById('i-title').style.color = d.color;
       document.getElementById('i-org').innerText = d.org;
       document.getElementById('i-time').innerText = d.time;
+      document.getElementById('i-specs').innerHTML = d.specs.map(s => `<div class="s-row" style="border-color:${d.color}"><div class="s-lbl">${s.l}</div><div class="s-val">${s.v}</div></div>`).join('');
+      document.getElementById('i-bullets').innerHTML = d.bullets.map(b => `<li style="--bullet-color:${d.color}">${b}</li>`).join('');
+      document.querySelectorAll('#i-bullets li').forEach(li => { li.style.cssText = `--bullet-color: ${d.color};`; });
+      document.getElementById('i-tools').innerHTML = d.tools.map(t => `<div class="tag" style="color:${d.color}; border-color:rgba(255,255,255,0.2); background:rgba(255,255,255,0.03);">${t}</div>`).join('');
 
-      // Inject Specs
-      document.getElementById('i-specs').innerHTML = d.specs.map(s => 
-        `<div class="s-row" style="border-color:${d.color}">
-          <div class="s-lbl">${s.l}</div><div class="s-val">${s.v}</div>
-        </div>`
-      ).join('');
-
-      // Inject Bullets
-      document.getElementById('i-bullets').innerHTML = d.bullets.map(b => 
-        `<li style="--bullet-color:${d.color}">${b}</li>`
-      ).join('');
-      // Apply color to pseudo element via inline style trick
-      document.querySelectorAll('#i-bullets li').forEach(li => {
-         li.style.cssText = `--bullet-color: ${d.color};`;
-      });
-
-      // Inject Tags
-      document.getElementById('i-tools').innerHTML = d.tools.map(t => 
-        `<div class="tag" style="color:${d.color}; border-color:rgba(${hexToRgb(d.color)}, 0.3); background:rgba(${hexToRgb(d.color)}, 0.05);">${t}</div>`
-      ).join('');
-
-      // Update Waveform State
-      tFreq = d.waveSpeed;
-      wCol = d.color;
-      document.getElementById('osc-freq').innerText = d.freq;
-      document.getElementById('osc-freq').style.color = d.color;
-    }
-
-    function hexToRgb(hex) {
-      let r = 0, g = 0, b = 0;
-      if (hex.length == 7) {
-        r = parseInt(hex.substring(1,3), 16);
-        g = parseInt(hex.substring(3,5), 16);
-        b = parseInt(hex.substring(5,7), 16);
+      // Toggle Open Source Graphics
+      if (id === 'open') {
+        document.getElementById('os-visual').classList.add('active');
+      } else {
+        document.getElementById('os-visual').classList.remove('active');
       }
-      return `${r},${g},${b}`;
+
+      // Update Top Labels
+      tColor = d.color;
+      currentLayoutMode = d.layoutMode;
+      document.getElementById('top-label').innerText = d.topLabel;
+      document.getElementById('top-label').style.color = d.color;
+      document.getElementById('top-status').innerText = d.topStatus;
+      
+      let rawHex = getComputedStyle(document.documentElement).getPropertyValue(d.color.match(/var\((.+?)\)/)[1]).trim();
+      generateTopology(rawHex, currentLayoutMode);
     }
 
-    // Dynamic Bullet CSS injection
     const style = document.createElement('style');
     style.innerHTML = `#i-bullets li::before { color: var(--bullet-color); }`;
     document.head.appendChild(style);
 
-    /* =========================================
-       2. SMOOTH OSCILLOSCOPE CANVAS
-       ========================================= */
-    const cv = document.getElementById('wave-canvas');
-    const ctx = cv.getContext('2d');
-    let t = 0;
-    
-    function resizeCv() { cv.width = cv.parentElement.clientWidth; cv.height = cv.parentElement.clientHeight; }
-    window.addEventListener('resize', resizeCv); resizeCv();
-
-    function drawWave() {
-      ctx.clearRect(0, 0, cv.width, cv.height);
-      cFreq += (tFreq - cFreq) * 0.08; 
-      t += cFreq;
-      
-      ctx.beginPath();
-      ctx.strokeStyle = wCol;
-      ctx.lineWidth = 2.5;
-      ctx.shadowBlur = 12;
-      ctx.shadowColor = wCol;
-      
-      const mid = cv.height / 2;
-      for(let i=0; i<cv.width; i++) {
-        // Compound sine wave for electronic signal feel
-        let y = mid + Math.sin(i * 0.04 + t) * 20 * Math.sin(i * 0.01 + t * 0.5) + Math.sin(i * 0.1 + t * 2) * 4;
-        if (i===0) ctx.moveTo(i, y); else ctx.lineTo(i, y);
-      }
-      ctx.stroke();
-      requestAnimationFrame(drawWave);
+    function hexToRgb(hex) {
+      if(!hex) return "0,240,255";
+      let r = 0, g = 0, b = 0;
+      if (hex.length === 7) { r = parseInt(hex.substring(1,3), 16); g = parseInt(hex.substring(3,5), 16); b = parseInt(hex.substring(5,7), 16); }
+      return `${r},${g},${b}`;
     }
-    drawWave();
 
     /* =========================================
-       3. BACKGROUND ELECTRON TRACES
+       2. SPECIFIC ROUTING & TOPOLOGY ENGINE
+       ========================================= */
+    const topCv = document.getElementById('topology-canvas');
+    const tCtx = topCv.getContext('2d');
+    
+    let macros = [];
+    let nets = [];
+    let renderTheme = "#00f0ff";
+
+    function resizeTopCv() { 
+      topCv.width = Math.max(10, topCv.parentElement.clientWidth); 
+      topCv.height = Math.max(10, topCv.parentElement.clientHeight); 
+      generateTopology(renderTheme, currentLayoutMode); 
+    }
+    window.addEventListener('resize', resizeTopCv); 
+
+    function generateTopology(colorHex, layoutMode) {
+      renderTheme = colorHex;
+      macros = [];
+      nets = [];
+      
+      const pad = 40;
+      const w = Math.max(10, topCv.width - pad*2);
+      const h = Math.max(10, topCv.height - pad*2);
+
+      // MACRO GENERATION LOGIC
+      if (layoutMode === 'network') {
+        macros.push({ x: w/2 - 40, y: h/2 - 40, w: 160, h: 160, label: "SWITCH_CORE" });
+        macros.push({ x: pad+10, y: pad+10, w: 80, h: 80, label: "PHY_0" });
+        macros.push({ x: w-70, y: pad+10, w: 80, h: 80, label: "PHY_1" });
+        macros.push({ x: pad+10, y: h-70, w: 80, h: 80, label: "PHY_2" });
+        macros.push({ x: w-70, y: h-70, w: 80, h: 80, label: "PHY_3" });
+        for(let i=0; i<30; i++) {
+          nets.push({ sx: w/2 + 40, sy: h/2 + 40, ex: pad + Math.random() * w, ey: pad + Math.random() * h, progress: Math.random() * -1, speed: 0.01 + Math.random() * 0.01 });
+        }
+      } 
+      else if (layoutMode === 'wifi') {
+        macros.push({ x: pad+50, y: pad+50, w: 180, h: 100, label: "ANALOG_RF" });
+        macros.push({ x: w-200, y: h-150, w: 160, h: 120, label: "DSP_CORE" });
+        for(let i=0; i<40; i++) {
+          nets.push({ sx: pad + Math.random() * w, sy: pad + Math.random() * h, ex: pad + Math.random() * w, ey: pad + Math.random() * h, progress: Math.random() * -1, speed: 0.015 });
+        }
+      }
+      else if (layoutMode === 'tv') {
+        macros.push({ x: pad+30, y: pad+50, w: 120, h: 90, label: "AON_CTRL", aon: true });
+        macros.push({ x: w/2, y: pad+20, w: 200, h: 80, label: "VIDEO_PIPE_0" });
+        macros.push({ x: w/2, y: h/2, w: 200, h: 80, label: "VIDEO_PIPE_1" });
+        for(let i=0; i<25; i++) {
+          nets.push({ sx: pad + Math.random() * w, sy: pad + Math.random() * h, ex: pad + Math.random() * w, ey: pad + Math.random() * h, progress: Math.random() * -1, speed: 0.01 });
+        }
+      }
+      else if (layoutMode === 'sat') {
+        macros.push({ x: w/2 - 80, y: h/2 - 50, w: 240, h: 140, label: "MAIN_LOGIC" });
+        for(let i=0; i<20; i++) {
+          nets.push({ sx: pad + Math.random() * w, sy: pad + Math.random() * h, ex: pad + Math.random() * w, ey: pad + Math.random() * h, progress: Math.random() * -1, speed: 0.008 });
+        }
+      }
+      else if (layoutMode === 'auto') {
+        for(let i=0; i<8; i++) {
+           macros.push({ x: pad + i*(w/8), y: pad+20, w: (w/8)-10, h: h-40, label: "SRV_NODE" });
+        }
+        for(let i=0; i<45; i++) {
+          let ypos = pad + Math.random() * h;
+          nets.push({ sx: pad, sy: ypos, ex: w, ey: ypos, progress: Math.random() * -1, speed: 0.02 + Math.random() * 0.03 });
+        }
+      }
+      else if (layoutMode === 'open') {
+        const colors = ["#f43f5e", "#3b82f6", "#10b981", "#a855f7", "#f59e0b", "#00f0ff"];
+        for(let i=0; i<18; i++) {
+          macros.push({ 
+            x: pad + Math.random()*(w-80), y: pad + Math.random()*(h-80), 
+            w: 40 + Math.random()*50, h: 30 + Math.random()*50, label: "OPEN_IP", customColor: colors[i%colors.length] 
+          });
+        }
+        for(let i=0; i<40; i++) {
+          nets.push({ sx: pad + Math.random() * w, sy: pad + Math.random() * h, ex: pad + Math.random() * w, ey: pad + Math.random() * h, progress: Math.random() * -1, speed: 0.015 });
+        }
+      }
+
+      // Snap nets to grid
+      nets.forEach(n => {
+        n.sx = Math.round(n.sx/20)*20; n.sy = Math.round(n.sy/20)*20;
+        n.ex = Math.round(n.ex/20)*20; n.ey = Math.round(n.ey/20)*20;
+      });
+    }
+
+    function drawTopology() {
+      tCtx.clearRect(0, 0, topCv.width, topCv.height);
+      const rgb = hexToRgb(renderTheme);
+      const pad = 40;
+      const w = Math.max(10, topCv.width - pad*2);
+      const h = Math.max(10, topCv.height - pad*2);
+
+      // Base Grid
+      tCtx.strokeStyle = 'rgba(255,255,255,0.03)';
+      tCtx.lineWidth = 1;
+      tCtx.beginPath();
+      for(let x=40; x<topCv.width-40; x+=20) { tCtx.moveTo(x, 40); tCtx.lineTo(x, topCv.height-40); }
+      for(let y=40; y<topCv.height-40; y+=20) { tCtx.moveTo(40, y); tCtx.lineTo(topCv.width-40, y); }
+      tCtx.stroke();
+
+      // Custom Overlays
+      if (currentLayoutMode === 'wifi') {
+        tCtx.strokeStyle = `rgba(${rgb}, 0.2)`;
+        tCtx.lineWidth = 2;
+        tCtx.beginPath();
+        for(let x=60; x<topCv.width-40; x+=60) { tCtx.moveTo(x, 40); tCtx.lineTo(x, topCv.height-40); }
+        for(let y=60; y<topCv.height-40; y+=60) { tCtx.moveTo(40, y); tCtx.lineTo(topCv.width-40, y); }
+        tCtx.stroke();
+      }
+      
+      if (currentLayoutMode === 'sat') {
+        tCtx.fillStyle = `rgba(${rgb}, 0.3)`;
+        for(let x=pad; x<=w+pad; x+=30) { tCtx.fillRect(x, pad-15, 15, 10); tCtx.fillRect(x, h+pad+5, 15, 10); }
+        for(let y=pad; y<=h+pad; y+=30) { tCtx.fillRect(pad-15, y, 10, 15); tCtx.fillRect(w+pad+5, y, 10, 15); }
+      }
+
+      if (currentLayoutMode === 'tv') {
+        tCtx.setLineDash([8, 6]);
+        tCtx.strokeStyle = `rgba(${rgb}, 0.8)`;
+        tCtx.lineWidth = 2;
+        tCtx.strokeRect(pad+10, pad+10, 160, 180);
+        tCtx.setLineDash([]);
+        tCtx.fillStyle = `rgba(${rgb}, 0.9)`;
+        tCtx.font = "11px 'JetBrains Mono'";
+        tCtx.fillText("[ VDD_AON_DOMAIN ]", pad+15, pad+25);
+      }
+
+      // Draw Macros
+      macros.forEach(m => {
+        let drawRGB = m.customColor ? hexToRgb(m.customColor) : rgb;
+        tCtx.fillStyle = `rgba(${drawRGB}, 0.15)`;
+        tCtx.strokeStyle = `rgba(${drawRGB}, 0.7)`;
+        tCtx.lineWidth = 1;
+        tCtx.fillRect(m.x, m.y, m.w, m.h);
+        tCtx.strokeRect(m.x, m.y, m.w, m.h);
+        
+        tCtx.beginPath();
+        tCtx.moveTo(m.x, m.y); tCtx.lineTo(m.x+m.w, m.y+m.h);
+        tCtx.moveTo(m.x+m.w, m.y); tCtx.lineTo(m.x, m.y+m.h);
+        tCtx.strokeStyle = `rgba(${drawRGB}, 0.2)`;
+        tCtx.stroke();
+
+        if(m.label) {
+          tCtx.fillStyle = m.customColor || renderTheme;
+          tCtx.font = "10px 'JetBrains Mono'";
+          tCtx.fillText(m.label, m.x + 4, m.y + 16);
+        }
+      });
+
+      // Animate Nets
+      tCtx.lineWidth = 2;
+      tCtx.lineJoin = 'round';
+      
+      nets.forEach(n => {
+        n.progress += n.speed;
+        if(n.progress > 1.2) n.progress = -0.2; 
+        if(n.progress < 0) return; 
+        
+        let drawProg = Math.min(1, n.progress);
+        
+        tCtx.beginPath();
+        tCtx.strokeStyle = currentLayoutMode === 'open' ? "#f8fafc" : renderTheme;
+        tCtx.shadowBlur = 10;
+        tCtx.shadowColor = currentLayoutMode === 'open' ? "#f8fafc" : renderTheme;
+        
+        tCtx.moveTo(n.sx, n.sy);
+        
+        if (currentLayoutMode === 'auto') {
+          tCtx.lineTo(n.sx + (n.ex - n.sx) * drawProg, n.sy);
+        } else {
+          let midX = n.sx; let midY = n.ey;
+          let totalDist = Math.abs(midY - n.sy) + Math.abs(n.ex - midX);
+          let currentDist = totalDist * drawProg;
+          
+          let d1 = Math.abs(midY - n.sy);
+          if(currentDist <= d1) {
+            let curY = n.sy + (midY > n.sy ? currentDist : -currentDist);
+            tCtx.lineTo(n.sx, curY);
+          } else {
+            tCtx.lineTo(n.sx, midY);
+            let remDist = currentDist - d1;
+            let curX = midX + (n.ex > midX ? remDist : -remDist);
+            tCtx.lineTo(curX, midY);
+          }
+        }
+        
+        tCtx.stroke();
+        tCtx.shadowBlur = 0; 
+      });
+
+      requestAnimationFrame(drawTopology);
+    }
+    
+    setTimeout(() => { 
+      resizeTopCv(); 
+      drawTopology(); 
+      document.querySelector('.node-btn').click(); 
+    }, 100);
+
+    /* =========================================
+       3. BACKGROUND ELECTRON TRACES (Fainter)
        ========================================= */
     const bgCv = document.getElementById('bg-canvas');
     const bCtx = bgCv.getContext('2d');
     let traces = [];
-    
     function resizeBg() { bgCv.width = window.innerWidth; bgCv.height = window.innerHeight; }
     window.addEventListener('resize', resizeBg); resizeBg();
 
@@ -494,16 +656,16 @@
       reset() {
         this.x = Math.random() * bgCv.width;
         this.y = Math.random() * bgCv.height;
-        this.vx = (Math.random() > 0.5 ? 1 : -1) * (1.5 + Math.random());
+        this.vx = (Math.random() > 0.5 ? 1 : -1) * (1.0 + Math.random());
         this.vy = 0;
         this.path = [{x: this.x, y: this.y}];
-        this.len = Math.floor(Math.random() * 80 + 40);
+        this.len = Math.floor(Math.random() * 50 + 20);
         this.life = 0;
-        this.maxLife = Math.random() * 250 + 100;
+        this.maxLife = Math.random() * 200 + 100;
         this.color = Math.random() > 0.7 ? '#a855f7' : '#00f0ff';
       }
       update() {
-        if (Math.random() < 0.04) {
+        if (Math.random() < 0.03) {
           if (this.vx !== 0) { this.vy = (Math.random() > 0.5 ? 1 : -1) * Math.abs(this.vx); this.vx = 0; } 
           else { this.vx = (Math.random() > 0.5 ? 1 : -1) * Math.abs(this.vy); this.vy = 0; }
         }
@@ -518,30 +680,19 @@
         bCtx.beginPath();
         bCtx.strokeStyle = this.color;
         bCtx.lineWidth = 1;
-        bCtx.globalAlpha = Math.max(0, 0.4 * (1 - this.life/this.maxLife));
+        bCtx.globalAlpha = Math.max(0, 0.2 * (1 - this.life/this.maxLife));
         bCtx.moveTo(this.path[0].x, this.path[0].y);
         for(let i=1; i<this.path.length; i++) bCtx.lineTo(this.path[i].x, this.path[i].y);
         bCtx.stroke();
-        
-        bCtx.beginPath();
-        bCtx.fillStyle = this.color;
-        bCtx.globalAlpha = Math.max(0, 0.8 * (1 - this.life/this.maxLife));
-        bCtx.arc(this.x, this.y, 1.5, 0, Math.PI*2);
-        bCtx.fill();
       }
     }
-
-    for(let i=0; i<35; i++) traces.push(new Trace());
-
+    for(let i=0; i<30; i++) traces.push(new Trace());
     function drawBg() {
       bCtx.clearRect(0, 0, bgCv.width, bgCv.height);
       traces.forEach(t => { t.update(); t.draw(); });
       requestAnimationFrame(drawBg);
     }
-    drawBg();
-
-    // Init First Node
-    loadNode('6nm', document.querySelector('.node-btn'));
+    drawBg(); 
   </script>
 </body>
 </html>
