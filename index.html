@@ -3,263 +3,176 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prachurjya Sharma | Physical Design & EDA Terminal</title>
+  <title>Prachurjya Sharma | Interactive Physical Design & VLSI Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #070b12;
-      --term-bg: #0f172a;
-      --cyan: #00f7ff;
-      --green: #10b981;
+      --bg: #060911;
+      --surface: #0f1626;
+      --surface-hover: #17223b;
+      --border: #1e2d4a;
+      --cyan: #00f0ff;
+      --blue: #3b82f6;
+      --emerald: #10b981;
       --amber: #f59e0b;
-      --purple: #a855f7;
-      --text: #e2e8f0;
-      --muted: #64748b;
+      --purple: #8b5cf6;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+
     body {
       background-color: var(--bg);
-      background-image: radial-gradient(circle at 50% 0%, rgba(0, 247, 255, 0.12), transparent 60%);
+      background-image: 
+        radial-gradient(circle at 15% 10%, rgba(0, 240, 255, 0.08), transparent 35%),
+        radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 40%),
+        linear-gradient(rgba(30, 45, 74, 0.18) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30, 45, 74, 0.18) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
       color: var(--text);
-      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 16px;
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
     }
-    .terminal {
-      width: 100%;
-      max-width: 960px;
-      background: var(--term-bg);
-      border: 1px solid #1e293b;
-      border-radius: 12px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 25px rgba(0, 247, 255, 0.08);
-      overflow: hidden;
-    }
-    .term-header {
-      background: #1e293b;
-      padding: 12px 18px;
+
+    /* Navbar */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(6, 9, 17, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 28px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
     }
-    .dots { display: flex; gap: 8px; }
-    .dot { width: 12px; height: 12px; border-radius: 50%; }
-    .red { background: #ef4444; }
-    .yellow { background: #f59e0b; }
-    .green { background: #10b981; }
-    .title { color: #94a3b8; font-size: 0.85rem; font-weight: 600; }
-    .quick-bar {
-      background: #131c31;
-      padding: 10px 18px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      border-bottom: 1px solid #1e293b;
-    }
-    .cmd-btn {
-      background: rgba(0, 247, 255, 0.07);
+    .logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1.1rem;
       color: var(--cyan);
-      border: 1px solid rgba(0, 247, 255, 0.3);
-      padding: 5px 11px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.78rem;
-      transition: all 0.18s ease;
-    }
-    .cmd-btn:hover {
-      background: var(--cyan);
-      color: #070b12;
-      font-weight: bold;
-    }
-    .term-body {
-      padding: 22px;
-      height: 550px;
-      overflow-y: auto;
-      line-height: 1.65;
-      font-size: 0.9rem;
-    }
-    .input-line {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-top: 14px;
     }
-    .prompt { color: var(--green); font-weight: bold; white-space: nowrap; }
-    input {
-      background: transparent;
-      border: none;
-      color: var(--cyan);
-      font-family: inherit;
+    .logo span {
+      background: rgba(0, 240, 255, 0.12);
+      border: 1px solid var(--cyan);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+    .nav-links a:hover { color: var(--cyan); }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 72px 0 56px;
+      display: grid;
+      grid-template-columns: 1.35fr 0.65fr;
+      gap: 36px;
+      align-items: center;
+    }
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: var(--emerald);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      background: linear-gradient(90deg, #ffffff, #93c5fd, #00f0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 1.08rem;
+      margin-bottom: 28px;
+      max-width: 640px;
+    }
+    .cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .btn {
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-weight: 600;
       font-size: 0.92rem;
-      width: 100%;
-      outline: none;
+      text-decoration: none;
+      cursor: pointer;
+      transition: 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
     }
-    .output-block { margin-bottom: 18px; }
-    .hl-cyan { color: var(--cyan); font-weight: bold; }
-    .hl-amber { color: var(--amber); font-weight: bold; }
-    .hl-green { color: var(--green); font-weight: bold; }
-    .hl-purple { color: var(--purple); font-weight: bold; }
-    a { color: var(--cyan); text-decoration: underline; }
-  </style>
-</head>
-<body>
-
-<div class="terminal">
-  <div class="term-header">
-    <div class="dots">
-      <div class="dot red"></div>
-      <div class="dot yellow"></div>
-      <div class="dot green"></div>
-    </div>
-    <div class="title">prachurjya@innovus_shell:~ (Interactive VLSI Resume)</div>
-    <div style="font-size: 0.75rem; color: var(--green);">● 6nm/7nm/12nm/22nm Ready</div>
-  </div>
-
-  <div class="quick-bar">
-    <span style="color:var(--muted); font-size:0.78rem; align-self:center;">Run Command:</span>
-    <button class="cmd-btn" onclick="runCmd('summary')">summary</button>
-    <button class="cmd-btn" onclick="runCmd('skills')">skills</button>
-    <button class="cmd-btn" onclick="runCmd('tapeouts')">tapeouts</button>
-    <button class="cmd-btn" onclick="runCmd('6nm')">6nm-chip</button>
-    <button class="cmd-btn" onclick="runCmd('7nm')">7nm-wifi</button>
-    <button class="cmd-btn" onclick="runCmd('12nm')">12nm-tv</button>
-    <button class="cmd-btn" onclick="runCmd('22nm')">22nm-sat</button>
-    <button class="cmd-btn" onclick="runCmd('experience')">experience</button>
-    <button class="cmd-btn" onclick="runCmd('opensource')">opensource</button>
-    <button class="cmd-btn" onclick="runCmd('contact')">contact</button>
-    <button class="cmd-btn" onclick="runCmd('clear')">clear</button>
-  </div>
-
-  <div class="term-body" id="term-body" onclick="document.getElementById('cmd-input').focus()">
-    <div class="output-block">
-      <span class="hl-cyan">====================================================================</span><br/>
-      <span class="hl-cyan">  PRACHURJYA SHARMA — PHYSICAL DESIGN & EDA AUTOMATION SHELL v2026  </span><br/>
-      <span class="hl-cyan">====================================================================</span><br/>
-      Welcome! Click any command chip above or type <span class="hl-amber">'help'</span> to inspect my RTL-to-GDSII experience.
-    </div>
-    <div id="history"></div>
-    <div class="input-line">
-      <span class="prompt">innovus_shell&gt;</span>
-      <input type="text" id="cmd-input" autofocus autocomplete="off" placeholder="Type 'tapeouts', '6nm', 'skills', 'experience', or 'help'..." />
-    </div>
-  </div>
-</div>
-
-<script>
-  const commands = {
-    help: `Available EDA Shell Commands:
-  <span class="hl-cyan">summary</span>     - Executive profile & core competencies
-  <span class="hl-cyan">skills</span>      - Commercial & Open-Source EDA tools, scripting & methodologies
-  <span class="hl-cyan">tapeouts</span>    - Overview of all 6nm, 7nm, 12nm, and 22nm silicon projects
-  <span class="hl-cyan">6nm</span>         - Deep-dive: 6nm MediaTek Network Chip (3.4M inst, 77 macros)
-  <span class="hl-cyan">7nm</span>         - Deep-dive: 7nm MediaTek Wi-Fi Chip (3.0M inst, 1.25 GHz Mesh CTS)
-  <span class="hl-cyan">12nm</span>        - Deep-dive: 12nm MediaTek Television Chip (AON Partition & ECOs)
-  <span class="hl-cyan">22nm</span>        - Deep-dive: 22nm ORCA Systems Full-Chip Satellite ASIC (287 macros)
-  <span class="hl-cyan">experience</span>  - Career history at Quest Global & KPIT Technologies
-  <span class="hl-cyan">opensource</span>  - SKY130, OpenLane, and TCL GitHub projects & Education
-  <span class="hl-cyan">contact</span>     - Direct email, LinkedIn, and GitHub links
-  <span class="hl-cyan">clear</span>       - Clear terminal screen`,
-
-    summary: `<span class="hl-amber">=== EXECUTIVE SUMMARY ===</span>
-<span class="hl-green">Prachurjya Sharma</span> | Physical Design Engineer (6nm, 7nm, 12nm, 22nm)
-• Hands-on expertise across the complete RTL-to-GDSII flow: Floorplanning, Power Planning,
-  Placement, Mesh CTS, RC-Aware Routing, ECOs, and Sign-Off (STA, EM/IR, CLP, DRC/LVS).
-• Proven track record automating repetitive DRC/LVS and timing fixes using <span class="hl-cyan">TCL & Perl</span>.
-• Unique multidisciplinary background combining deep VLSI implementation at <span class="hl-cyan">Quest Global</span>
-  with C#/.NET & Azure software engineering experience at <span class="hl-cyan">KPIT Technologies</span>.`,
-
-    skills: `<span class="hl-amber">=== TECHNICAL SKILLS & EDA ARSENAL ===</span>
-• <span class="hl-cyan">Commercial EDA:</span> Cadence Innovus, Mentor Aprisa, Synopsys PrimeTime, Calibre, Tweaker
-• <span class="hl-cyan">Open-Source EDA:</span> OpenLane, Magic, Yosys, OpenTimer, Icarus Verilog (iverilog), GTKWave
-• <span class="hl-cyan">PD & Sign-Off:</span> Multi-Power/Voltage Domains, Mesh CTS, Low-Power & IR-Aware Design,
-  RC-Aware Routing, STA, Crosstalk/SI/Glitch, EM/IR, CLP, Metal/Functional ECO, DRC/LVS/ERC
-• <span class="hl-cyan">Languages & Dev:</span> TCL, Perl, Verilog, Shell, C#/.NET, SQL, Azure`,
-
-    tapeouts: `<span class="hl-amber">=== SILICON PROJECT MATRIX (Type '6nm', '7nm', '12nm', or '22nm' for details) ===</span>
-1. <span class="hl-cyan">[6nm]  Network Chip (MediaTek)</span>    | 3.40M Inst | 77 Macros  | 500 MHz  | Innovus, Tweaker, Calibre
-2. <span class="hl-cyan">[7nm]  Wi-Fi Chip (MediaTek)</span>      | 3.00M Inst | 87 Macros  | 1.25 GHz | Innovus, Tweaker, Calibre
-3. <span class="hl-cyan">[12nm] Television Chip (MediaTek)</span> | 1.68M Inst | 113 Macros | 206 MHz  | Innovus, Tweaker, Calibre
-4. <span class="hl-cyan">[22nm] Satellite Chip (ORCA Sys)</span>  | 4.00M Inst | 287 Macros | 520 MHz  | Aprisa, PrimeTime, Calibre`,
-
-    "6nm": `<span class="hl-amber">=== 6nm NETWORK CHIP (MediaTek) | Jan 2025 – Present ===</span>
-• <span class="hl-cyan">Specs:</span> 6nm Node | 3.4M Instances | 77 Macros | 500 MHz | Tools: Innovus, Tweaker, Calibre
-• <span class="hl-cyan">Ownership:</span> Full Floorplan-to-Signoff flow including Multi-Power Domain FP & Placement, STA, EM/IR, DRC/LVS.
-• <span class="hl-green">Key Impact:</span>
-  - Overcame severe multi-power domain placement congestion via cell density optimization.
-  - <span class="hl-cyan">Reduced metal DRCs by 25%</span> using custom routing constraints and strategic metal layer promotion.
-  - <span class="hl-cyan">Cut IR drop resistance by ~40%</span> through dynamic/PSH IR drop fixes and cross-domain CLP closure.`,
-
-    "7nm": `<span class="hl-amber">=== 7nm WI-FI CHIP (MediaTek) | Aug 2024 – Jan 2025 ===</span>
-• <span class="hl-cyan">Specs:</span> 7nm Node | 3.0M Instances | 87 Macros | 1.25 GHz | Tools: Innovus, Tweaker, Calibre
-• <span class="hl-cyan">Ownership:</span> Full Floorplan-to-Signoff flow with high-speed <span class="hl-cyan">Mesh CTS</span>, critical setup closure, and DRC/IR fixes.
-• <span class="hl-green">Key Impact:</span>
-  - Closed challenging 1.25 GHz setup timing and clock latency targets for hold timing.
-  - Built automated <span class="hl-cyan">TCL scripts</span> to resolve high-density metal DRC and LVS violations rapidly.`,
-
-    "12nm": `<span class="hl-amber">=== 12nm TELEVISION CHIP (MediaTek) | Nov 2023 – Jul 2024 ===</span>
-• <span class="hl-cyan">Specs:</span> 12nm Node | 1.68M Instances | 113 Macros | 206 MHz | Tools: Innovus, Tweaker, Calibre
-• <span class="hl-cyan">Ownership:</span> Floorplan-to-Routing and STA timing closure for the Always-On (AON) partition.
-• <span class="hl-green">Key Impact:</span>
-  - Executed multiple Functional ECOs and Metal ECOs for hold timing closure.
-  - Resolved cell density, DRC, LEC, and CLP violations under an extreme tapeout deadline.`,
-
-    "22nm": `<span class="hl-amber">=== 22nm FULL-CHIP SATELLITE ASIC (ORCA Systems) | Sep 2022 – Aug 2023 ===</span>
-• <span class="hl-cyan">Specs:</span> 22nm Full-Chip | 4.0M Instances | 287 Macros | 520 MHz | Tools: Aprisa, PrimeTime, Calibre
-• <span class="hl-cyan">Ownership:</span> Full-Chip Floorplanning (Die, IO Pads, DCAP, Level-Shifters), Power Planning (Rings & Stripes), and Multi-Voltage STA.
-• <span class="hl-green">Key Impact:</span>
-  - Closed full-chip IR drop and multi-corner multi-voltage timing across 287 macros.`,
-
-    experience: `<span class="hl-amber">=== WORK EXPERIENCE ===</span>
-<span class="hl-green">1. Quest Global — Physical Design Engineer</span> (Bangalore | June 2022 – Present)
-   • Block-level (6nm, 7nm, 12nm) and Full-Chip (22nm) physical implementation & sign-off.
-   • Automated repetitive DRC and sign-off workflows using TCL to boost team productivity.
-
-<span class="hl-green">2. KPIT Technologies — Senior Engineer</span> (Pune | Feb 2020 – May 2022)
-   • Engineered custom C#/.NET, SQL processes, and Microsoft Azure integrations for
-     cross-functional Automotive ECU Cybersecurity platforms.`,
-
-    opensource: `<span class="hl-amber">=== OPEN-SOURCE VLSI & EDUCATION ===</span>
-• <span class="hl-cyan">GitHub Projects & Certifications:</span>
-  - Advanced Physical Design with OpenLane / SKY130 PDK
-  - TCL for VLSI Design and Synthesis
-  - RTL Design and Synthesis using SKY130 (Yosys, iverilog, GTKWave)
-• <span class="hl-cyan">Education:</span>
-  - B.Tech. in Electronics & Communication Engineering
-    SRM Institute of Science and Technology, Chennai (GPA: 81.46%)`,
-
-    contact: `<span class="hl-amber">=== CONTACT & LINKS ===</span>
-• <span class="hl-cyan">Email:</span>    <a href="mailto:prachurjyaraj@hotmail.com">prachurjyaraj@hotmail.com</a>
-• <span class="hl-cyan">LinkedIn:</span> <a href="https://www.linkedin.com/in/prachurjya-sharma-04/" target="_blank">linkedin.com/in/prachurjya-sharma-04</a>
-• <span class="hl-cyan">GitHub:</span>   <a href="https://github.com/prachurjyaghy" target="_blank">github.com/prachurjyaghy</a>
-• <span class="hl-cyan">Location:</span> Bangalore / Chennai, India`
-  };
-
-  const input = document.getElementById('cmd-input');
-  const history = document.getElementById('history');
-  const termBody = document.getElementById('term-body');
-
-  function runCmd(raw) {
-    const cmd = raw.trim().toLowerCase();
-    if (cmd === 'clear') {
-      history.innerHTML = '';
-      return;
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      color: #050811;
+      box-shadow: 0 8px 25px rgba(0, 240, 255, 0.25);
     }
-    const block = document.createElement('div');
-    block.className = 'output-block';
-    const response = commands[cmd] || `Error: Unknown command '${cmd}'. Type <span class="hl-amber">'help'</span> or click a button above.`;
-    block.innerHTML = `<div><span class="prompt">innovus_shell&gt;</span> ${raw}</div><div style="margin-top:6px; white-space:pre-wrap;">${response}</div>`;
-    history.appendChild(block);
-    termBody.scrollTop = termBody.scrollHeight;
-  }
-
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && input.value.trim() !== '') {
-      runCmd(input.value);
-      input.value = '';
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0, 240, 255, 0.4); }
+    .btn-outline {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
     }
-  });
-</script>
-</body>
-</html>
+    .btn-outline:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* Hero Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      transition: 0.25s;
+    }
+    .stat-card:hover { border-color: var(--cyan); transform: translateY(-3px); }
+    .stat-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--cyan);
+    }
+    .stat-label { font-size: 0.8rem; color: var(--
