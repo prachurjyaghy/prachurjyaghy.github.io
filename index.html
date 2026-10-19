@@ -3,176 +3,459 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prachurjya Sharma | Interactive Physical Design & VLSI Portfolio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>Prachurjya Sharma | Visual Data Model Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #060911;
-      --surface: #0f1626;
-      --surface-hover: #17223b;
-      --border: #1e2d4a;
+      --bg: #050811;
+      --panel-bg: #0b1120;
       --cyan: #00f0ff;
       --blue: #3b82f6;
-      --emerald: #10b981;
-      --amber: #f59e0b;
       --purple: #8b5cf6;
+      --emerald: #10b981;
+      --border: #1e2d4a;
       --text: #f1f5f9;
       --muted: #94a3b8;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background-color: var(--bg);
-      background-image: 
-        radial-gradient(circle at 15% 10%, rgba(0, 240, 255, 0.08), transparent 35%),
-        radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 40%),
-        linear-gradient(rgba(30, 45, 74, 0.18) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(30, 45, 74, 0.18) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
       color: var(--text);
       font-family: 'Inter', sans-serif;
-      line-height: 1.6;
-      overflow-x: hidden;
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
     }
 
-    /* Navbar */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(6, 9, 17, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 28px;
+    /* CSS Grid background pattern */
+    .bg-grid {
+      position: absolute;
+      width: 100%; height: 100%; z-index: 0;
+      background-image: 
+        linear-gradient(rgba(30, 45, 74, 0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30, 45, 74, 0.3) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* Layout Split */
+    .canvas-container {
+      flex: 1;
+      position: relative;
+      z-index: 1;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
     }
-    .logo {
+    
+    .sidebar {
+      width: 420px;
+      background: var(--panel-bg);
+      border-left: 1px solid var(--border);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    }
+
+    /* SVG Canvas Styles */
+    svg {
+      width: 100%;
+      height: 100%;
+      max-width: 1200px;
+      max-height: 900px;
+    }
+
+    /* Orthogonal Data Traces */
+    .data-trace {
+      stroke: var(--border);
+      stroke-width: 2;
+      fill: none;
+    }
+    .data-flow {
+      stroke: var(--cyan);
+      stroke-width: 3;
+      fill: none;
+      stroke-dasharray: 8 16;
+      animation: flow-anim 1.5s linear infinite;
+      opacity: 0.6;
+    }
+    .data-flow.purple { stroke: var(--purple); }
+    .data-flow.emerald { stroke: var(--emerald); }
+
+    @keyframes flow-anim {
+      to { stroke-dashoffset: -24; }
+    }
+
+    /* Interactive Data Nodes */
+    .node-group { cursor: pointer; transition: 0.3s; }
+    
+    .node-bg {
+      fill: #0d1527;
+      stroke: #1e2d4a;
+      stroke-width: 2;
+      transition: all 0.3s ease;
+    }
+    
+    .node-group:hover .node-bg, .node-group.active .node-bg {
+      fill: #162340;
+      stroke: var(--cyan);
+      stroke-width: 3;
+      filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.4));
+    }
+
+    .node-group.software:hover .node-bg, .node-group.software.active .node-bg {
+      stroke: var(--purple);
+      filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.4));
+    }
+
+    /* Typography inside SVG */
+    .node-title {
       font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
       font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--cyan);
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      fill: var(--text);
+      text-anchor: middle;
+      pointer-events: none;
     }
-    .logo span {
-      background: rgba(0, 240, 255, 0.12);
-      border: 1px solid var(--cyan);
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-    }
-    .nav-links {
-      display: flex;
-      gap: 24px;
-      list-style: none;
-    }
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: 0.2s;
-    }
-    .nav-links a:hover { color: var(--cyan); }
-
-    .container {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 0 24px;
+    .node-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      fill: var(--muted);
+      text-anchor: middle;
+      pointer-events: none;
     }
 
-    /* Hero Section */
-    .hero {
-      padding: 72px 0 56px;
-      display: grid;
-      grid-template-columns: 1.35fr 0.65fr;
-      gap: 36px;
-      align-items: center;
+    /* Sidebar Telemetry UI */
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0, 240, 255, 0.03);
     }
-    .badge-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      color: var(--emerald);
+    .sys-status {
       font-family: 'JetBrains Mono', monospace;
+      color: var(--cyan);
       font-size: 0.8rem;
-      padding: 6px 14px;
-      border-radius: 999px;
-      margin-bottom: 18px;
-    }
-    .hero h1 {
-      font-size: 3rem;
-      font-weight: 800;
-      line-height: 1.15;
-      margin-bottom: 16px;
-      background: linear-gradient(90deg, #ffffff, #93c5fd, #00f0ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .hero p {
-      color: var(--muted);
-      font-size: 1.08rem;
-      margin-bottom: 28px;
-      max-width: 640px;
-    }
-    .cta-group {
       display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-    .btn {
-      padding: 12px 22px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.92rem;
-      text-decoration: none;
-      cursor: pointer;
-      transition: 0.25s;
-      display: inline-flex;
       align-items: center;
       gap: 8px;
-      border: none;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--cyan), var(--blue));
-      color: #050811;
-      box-shadow: 0 8px 25px rgba(0, 240, 255, 0.25);
-    }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0, 240, 255, 0.4); }
-    .btn-outline {
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-outline:hover { border-color: var(--cyan); color: var(--cyan); }
+    .sys-dot { width: 8px; height: 8px; background: var(--cyan); border-radius: 50%; box-shadow: 0 0 8px var(--cyan); animation: pulse 2s infinite; }
+    
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    /* Hero Stats Grid */
-    .stats-grid {
+    .sidebar-title { font-size: 1.6rem; font-weight: 600; margin-bottom: 6px; }
+    .sidebar-org { color: var(--muted); font-size: 0.95rem; }
+
+    .sidebar-content {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .telemetry-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap: 12px;
+      margin-bottom: 24px;
     }
-    .stat-card {
-      background: var(--surface);
+    .t-box {
+      background: #111a2f;
       border: 1px solid var(--border);
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      transition: 0.25s;
+      padding: 12px;
+      border-radius: 8px;
     }
-    .stat-card:hover { border-color: var(--cyan); transform: translateY(-3px); }
-    .stat-num {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.75rem;
-      font-weight: 700;
+    .t-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; }
+    .t-value { font-size: 1rem; color: var(--cyan); font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+
+    .data-list { list-style: none; margin-bottom: 24px; }
+    .data-list li {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 12px;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .data-list li::before {
+      content: '▹';
+      position: absolute;
+      left: 0; top: 0;
       color: var(--cyan);
+      font-size: 1.2rem;
     }
-    .stat-label { font-size: 0.8rem; color: var(--
+
+    .tech-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+
+  <!-- Left Canvas: The Graphic Data Model -->
+  <div class="canvas-container">
+    <svg viewBox="0 0 1000 800" preserveAspectRatio="xMidYMid meet">
+      
+      <!-- Orthogonal Routing Traces (Base Lines) -->
+      <path class="data-trace" d="M500,400 L500,165 L270,165" />
+      <path class="data-trace" d="M500,400 L500,165 L730,165" />
+      <path class="data-trace" d="M350,400 L250,400" />
+      <path class="data-trace" d="M650,400 L750,400" />
+      <path class="data-trace" d="M500,400 L500,635 L270,635" />
+      <path class="data-trace" d="M500,400 L500,635 L730,635" />
+
+      <!-- Glowing Animated Flow Traces -->
+      <path class="data-flow" d="M500,400 L500,165 L270,165" />
+      <path class="data-flow" d="M500,400 L500,165 L730,165" />
+      <path class="data-flow" d="M350,400 L250,400" />
+      <path class="data-flow purple" d="M650,400 L750,400" />
+      <path class="data-flow purple" d="M500,400 L500,635 L270,635" />
+      <path class="data-flow emerald" d="M500,400 L500,635 L730,635" />
+
+      <!-- Center Hub -->
+      <g class="node-group active" id="node-hub" onclick="loadData('hub')">
+        <rect x="350" y="350" width="300" height="100" rx="12" class="node-bg" style="fill:#0f172a;" />
+        <text x="500" y="395" class="node-title" style="font-size:20px; fill:var(--cyan);">Prachurjya Sharma</text>
+        <text x="500" y="420" class="node-sub">Physical Design & EDA Core Engine</text>
+      </g>
+
+      <!-- Node 1: 6nm Network -->
+      <g class="node-group" id="node-6nm" onclick="loadData('6nm')">
+        <rect x="50" y="120" width="220" height="90" rx="8" class="node-bg" />
+        <text x="160" y="160" class="node-title">6nm Network Chip</text>
+        <text x="160" y="185" class="node-sub">MediaTek • 3.4M Inst</text>
+      </g>
+
+      <!-- Node 2: 7nm Wi-Fi -->
+      <g class="node-group" id="node-7nm" onclick="loadData('7nm')">
+        <rect x="730" y="120" width="220" height="90" rx="8" class="node-bg" />
+        <text x="840" y="160" class="node-title">7nm Wi-Fi Subsystem</text>
+        <text x="840" y="185" class="node-sub">MediaTek • 1.25 GHz</text>
+      </g>
+
+      <!-- Node 3: 12nm/22nm Base -->
+      <g class="node-group" id="node-base" onclick="loadData('base')">
+        <rect x="30" y="355" width="220" height="90" rx="8" class="node-bg" />
+        <text x="140" y="395" class="node-title">Legacy & Full-Chip</text>
+        <text x="140" y="420" class="node-sub">12nm TV & 22nm Satellite</text>
+      </g>
+
+      <!-- Node 4: Automation -->
+      <g class="node-group software" id="node-auto" onclick="loadData('auto')">
+        <rect x="750" y="355" width="220" height="90" rx="8" class="node-bg" />
+        <text x="860" y="395" class="node-title">EDA Automation</text>
+        <text x="860" y="420" class="node-sub">TCL • Perl • Custom DRCs</text>
+      </g>
+
+      <!-- Node 5: Cloud/Software -->
+      <g class="node-group software" id="node-soft" onclick="loadData('soft')">
+        <rect x="50" y="590" width="220" height="90" rx="8" class="node-bg" />
+        <text x="160" y="630" class="node-title">Cloud & Software</text>
+        <text x="160" y="655" class="node-sub">C# • Azure @ KPIT</text>
+      </g>
+
+      <!-- Node 6: Open Source VLSI -->
+      <g class="node-group" id="node-open" onclick="loadData('open')">
+        <rect x="730" y="590" width="220" height="90" rx="8" class="node-bg" />
+        <text x="840" y="630" class="node-title">Open-Source VLSI</text>
+        <text x="840" y="655" class="node-sub">SKY130 PDK • OpenLane</text>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Right Sidebar: Telemetry Inspector -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sys-status"><div class="sys-dot"></div> Data Link Active</div>
+      <h2 class="sidebar-title" id="side-title">Prachurjya Sharma</h2>
+      <div class="sidebar-org" id="side-org">Physical Design Engineer @ Quest Global</div>
+    </div>
+    <div class="sidebar-content">
+      
+      <div class="telemetry-grid" id="side-metrics">
+        <!-- Injected via JS -->
+      </div>
+
+      <div style="font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--muted); margin-bottom:12px; letter-spacing:1px;">/// ARCHITECTURE & EXECUTION ///</div>
+      <ul class="data-list" id="side-bullets">
+        <!-- Injected via JS -->
+      </ul>
+
+      <div style="font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--muted); margin-bottom:12px; letter-spacing:1px;">/// TECHNICAL STACK ///</div>
+      <div class="tech-tags" id="side-tags">
+        <!-- Injected via JS -->
+      </div>
+      
+      <!-- Permanent Contact Links -->
+      <div style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px; font-size: 0.85rem;">
+        <a href="https://github.com/prachurjyaghy" target="_blank" style="color:var(--cyan); text-decoration:none; margin-right: 15px;">[ GitHub ↗ ]</a>
+        <a href="https://www.linkedin.com/in/prachurjya-sharma-04/" target="_blank" style="color:var(--cyan); text-decoration:none; margin-right: 15px;">[ LinkedIn ↗ ]</a>
+        <a href="mailto:prachurjyaraj@hotmail.com" style="color:var(--cyan); text-decoration:none;">[ Email ↗ ]</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const dataModel = {
+      hub: {
+        title: "Executive Core Engine",
+        org: "Physical Design & Software Automation",
+        metrics: [
+          { label: "EXPERIENCE", val: "3+ Years" },
+          { label: "TECH NODES", val: "6nm to 22nm" },
+          { label: "MAX COMPLEXITY", val: "4.0M Instances" },
+          { label: "CORE SKILLS", val: "PnR & Signoff" }
+        ],
+        bullets: [
+          "Hands-on Physical Design Engineer driving advanced node (6nm, 7nm, 12nm, 22nm) RTL-to-GDSII implementation.",
+          "Bridging hardware and software with deep expertise in C#/.NET Cloud development and TCL/Perl EDA automation.",
+          "Active contributor to Open-Source VLSI utilizing the SKY130 PDK and OpenLane flow."
+        ],
+        tags: ["Floorplanning", "Mesh CTS", "RC-Aware Routing", "EM/IR Signoff", "STA Timing Closure"]
+      },
+      "6nm": {
+        title: "6nm Network Chip",
+        org: "MediaTek (Jan 2025 – Present)",
+        metrics: [
+          { label: "NODE", val: "6nm FinFET" },
+          { label: "INSTANCES", val: "3.4 Million" },
+          { label: "MACROS", val: "77" },
+          { label: "FREQUENCY", val: "500 MHz" }
+        ],
+        bullets: [
+          "Overcame severe placement congestion across multi-power domains using optimized cell density strategies.",
+          "Reduced metal DRCs by 25% by engineering custom routing constraints and strategic metal layer promotion.",
+          "Cut dynamic and PSH IR drop resistance by ~40% and closed cross-domain Low Power (CLP) checks."
+        ],
+        tags: ["Cadence Innovus", "Tweaker", "Mentor Calibre", "Multi-Power Domain", "EM/IR Analysis"]
+      },
+      "7nm": {
+        title: "7nm Wi-Fi Subsystem",
+        org: "MediaTek (Aug 2024 – Jan 2025)",
+        metrics: [
+          { label: "NODE", val: "7nm FinFET" },
+          { label: "INSTANCES", val: "3.0 Million" },
+          { label: "MACROS", val: "87" },
+          { label: "FREQUENCY", val: "1.25 GHz" }
+        ],
+        bullets: [
+          "Delivered full Floorplan-to-Signoff flow targeting ultra-high-speed 1.25 GHz frequencies.",
+          "Implemented complex Mesh Clock Tree Synthesis (CTS) and balanced clock latency for strict hold timing closure.",
+          "Automated high-density metal DRC and LVS fixes using custom TCL scripts."
+        ],
+        tags: ["7nm FinFET", "1.25 GHz Mesh CTS", "Clock Latency", "TCL Automation", "Setup/Hold Closure"]
+      },
+      "base": {
+        title: "12nm TV & 22nm Satellite",
+        org: "MediaTek & ORCA Systems",
+        metrics: [
+          { label: "NODES", val: "12nm & 22nm" },
+          { label: "MAX INSTANCES", val: "4.0 Million" },
+          { label: "MAX MACROS", val: "287" },
+          { label: "ARCHITECTURE", val: "Full-Chip Die" }
+        ],
+        bullets: [
+          "Implemented the Always-On (AON) partition for the 12nm TV chip, executing Functional/Metal ECOs under tight deadlines.",
+          "Owned 22nm Full-Chip Floorplanning: Die/IO Pad creation, DCAP placement, and Level-Shifter planning.",
+          "Architected multi-voltage power rings/stripes and resolved complex IR drop and STA violations."
+        ],
+        tags: ["Mentor Aprisa", "PrimeTime", "Full-Chip IO Pads", "AON Partitions", "Functional ECOs"]
+      },
+      "auto": {
+        title: "EDA Automation Engine",
+        org: "Custom Scripts & Methodology Tools",
+        metrics: [
+          { label: "PRIMARY LANG", val: "TCL & Perl" },
+          { label: "SECONDARY LANG", val: "Bash Shell" },
+          { label: "IMPACT 01", val: "DRC Reduction" },
+          { label: "IMPACT 02", val: "Turnaround Time" }
+        ],
+        bullets: [
+          "Developed custom TCL procedures to automate repetitive Calibre DRC, LVS, and Antenna layout fixes.",
+          "Built parsing scripts in Perl/Bash to extract Quality of Results (QoR) metrics from PrimeTime and Innovus logs.",
+          "Engineered flow hooks to calculate macro halos, routing congestion boundaries, and automated ECO timing fixes."
+        ],
+        tags: ["TCL / Tk", "Perl Scripting", "Log Parsing", "Calibre Automation", "Linux / Shell"]
+      },
+      "soft": {
+        title: "Software & Cloud Stack",
+        org: "KPIT Technologies (2020 – 2022)",
+        metrics: [
+          { label: "ROLE", val: "Senior Engineer" },
+          { label: "DOMAIN", val: "Cybersecurity" },
+          { label: "BACKEND", val: "C# & .NET" },
+          { label: "CLOUD", val: "Microsoft Azure" }
+        ],
+        bullets: [
+          "Developed custom C#/.NET and SQL backend processes integrating with Microsoft Azure.",
+          "Built cross-functional software infrastructure for Automotive ECU Cybersecurity platforms.",
+          "Collaborated with global, multi-lingual teams to translate business requirements into production-ready software."
+        ],
+        tags: ["C# / .NET", "Microsoft Azure", "SQL Databases", "Automotive ECUs", "Agile Software Dev"]
+      },
+      "open": {
+        title: "Open-Source VLSI R&D",
+        org: "SRM Institute (B.Tech ECE) & GitHub",
+        metrics: [
+          { label: "FOUNDRY PDK", val: "SKY130" },
+          { label: "TOOLCHAIN", val: "OpenLane Flow" },
+          { label: "SYNTHESIS", val: "Yosys" },
+          { label: "SIMULATION", val: "GTKWave" }
+        ],
+        bullets: [
+          "Executed complete Open-Source RTL-to-GDSII tapeout flows using OpenLane and the SkyWater SKY130 PDK.",
+          "Performed layout viewing and DRC checks natively in Magic VLSI.",
+          "Wrote and synthesized custom Verilog RTL designs, verifying timing with OpenTimer and Icarus Verilog."
+        ],
+        tags: ["OpenLane", "SKY130 PDK", "Magic VLSI", "Yosys Synthesis", "Verilog RTL", "OpenTimer"]
+      }
+    };
+
+    function loadData(nodeId) {
+      // Update active SVG node highlight
+      document.querySelectorAll('.node-group').forEach(el => el.classList.remove('active'));
+      document.getElementById('node-' + nodeId).classList.add('active');
+
+      // Fetch data
+      const data = dataModel[nodeId];
+
+      // Update Sidebar UI
+      document.getElementById('side-title').innerText = data.title;
+      document.getElementById('side-org').innerText = data.org;
+
+      // Populate Metrics Grid
+      const metricsHtml = data.metrics.map(m => `
+        <div class="t-box">
+          <div class="t-label">${m.label}</div>
+          <div class="t-value">${m.val}</div>
+        </div>
+      `).join('');
+      document.getElementById('side-metrics').innerHTML = metricsHtml;
+
+      // Populate Bullets
+      const bulletsHtml = data.bullets.map(b => `<li>${b}</li>`).join('');
+      document.getElementById('side-bullets').innerHTML = bulletsHtml;
+
+      // Populate Tags
+      const tagsHtml = data.tags.map(t => `<div class="tag">${t}</div>`).join('');
+      document.getElementById('side-tags').innerHTML = tagsHtml;
+    }
+
+    // Load Hub data on startup
+    loadData('hub');
+  </script>
+</body>
+</html>
